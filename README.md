@@ -1,32 +1,36 @@
-# ToolBox <img src="/assets/images/toolbox.png" width="15%"></img>
+# ToolBox <img src="./assets/images/toolbox.png" width="15%" alt="toolbox" />
 
 The source code of my toolbox. Developed using the Flutter library and runs on the desktop.
 
 ## Implemented Features
 
-1. Login Page:
+1.  Login Page:
 
-    ![Login Page Dark](/assets/features/login_page_dark.png)
+    ![Login Page](./assets/features/login_page.png)
 
-2. Index Page:
+2.  SignUp Page:
 
-    ![Index Page Dark](/assets/features/index_page_dark.png)
+    ![SignUp Page](./assets/features/signup_page.png)
+
+3.  Index Page:
+
+    ![Index Page](./assets/features/index_page.png)
 
 ## Upcoming Features
 
 The following tools are included in my toolbox(below is the design diagram):
 
-1. Chat:
+1.  Chat:
 
-    ![Chat](/assets/features/chat.png)
+    ![Chat](./assets/features/chat.png)
 
-2. Notes:
+2.  Notes:
 
-    ![Notes](/assets/features/notes.png)
+    ![Notes](./assets/features/notes.png)
 
-3. To Do:
+3.  To Do:
 
-    ![To Do](/assets/features/todo.png)
+    ![To Do](./assets/features/todo.png)
 
 ## Development
 
