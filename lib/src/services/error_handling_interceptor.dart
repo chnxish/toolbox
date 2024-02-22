@@ -10,25 +10,28 @@ class ErrorHandlingInterceptor extends QueuedInterceptor {
   @override
   void onError(DioException? err, ErrorInterceptorHandler? handler) {
     var errType = err!.type;
+    var requestOptions = err.requestOptions;
+    var response = err.response;
     if (errType == DioExceptionType.connectionError ||
         errType == DioExceptionType.sendTimeout ||
         errType == DioExceptionType.receiveTimeout) {
-      handler!.reject(DeadlineExceededException(err.requestOptions));
+      handler!.reject(DeadlineExceededException(requestOptions, response!));
     } else if (errType == DioExceptionType.badResponse) {
       switch (err.response?.statusCode) {
         case 400:
-          handler!.reject(BadRequestException(err.requestOptions));
+          handler!.reject(BadRequestException(requestOptions, response!));
         case 401:
-          handler!.reject(UnauthorizedException(err.requestOptions));
+          handler!.reject(UnauthorizedException(requestOptions, response!));
         case 404:
-          handler!.reject(NotFoundException(err.requestOptions));
+          handler!.reject(NotFoundException(requestOptions, response!));
         case 409:
-          handler!.reject(ConflictException(err.requestOptions));
+          handler!.reject(ConflictException(requestOptions, response!));
         case 500:
-          handler!.reject(InternalServerErrorException(err.requestOptions));
+          handler!
+              .reject(InternalServerErrorException(requestOptions, response!));
       }
     } else if (errType == DioExceptionType.unknown) {
-      handler!.reject(NoInternetConnectionException(err.requestOptions));
+      handler!.reject(NoInternetConnectionException(requestOptions, response!));
     } else {
       return handler!.next(err);
     }

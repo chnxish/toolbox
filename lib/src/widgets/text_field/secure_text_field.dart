@@ -6,23 +6,29 @@ import 'package:toolbox/src/constant/custom_colors.dart';
 import 'package:toolbox/src/theme/theme.dart';
 import 'package:toolbox/src/utils/validate.dart';
 
-class PasswordTextField extends StatefulWidget {
-  const PasswordTextField({
+class SecureTextField extends StatefulWidget {
+  const SecureTextField({
     super.key,
     required this.controller,
+    this.hintText,
+    this.onEditingComplete,
+    this.validator = validate,
   });
 
   final TextEditingController controller;
+  final String? hintText;
+  final VoidCallback? onEditingComplete;
+  final Validator validator;
 
   @override
-  State<PasswordTextField> createState() => _PasswordTextFieldState();
+  State<SecureTextField> createState() => _SecureTextFieldState();
 }
 
-class _PasswordTextFieldState extends State<PasswordTextField> {
+class _SecureTextFieldState extends State<SecureTextField> {
   late final FocusNode _focusNode;
   bool _isFocus = false;
   bool _isObscure = true;
-  String? errorText;
+  String? _errorText;
 
   @override
   void initState() {
@@ -31,7 +37,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
     _focusNode.addListener(() {
       final bool hasFocus = _focusNode.hasFocus;
       if (!hasFocus) {
-        _validatePasswordInput();
+        _validateInput();
       }
       setState(() {
         _isFocus = hasFocus;
@@ -39,16 +45,16 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
     });
   }
 
-  void _validatePasswordInput() {
+  void _validateInput() {
     String value = widget.controller.text;
     setState(() {
-      errorText = validatePassword(value);
+      _errorText = widget.validator(value);
     });
   }
 
   Widget _buildErrorText(TextStyle? textStyle) {
-    return (errorText != null && _isFocus == false)
-        ? SizedBox(width: 300.0, child: Text(errorText!, style: textStyle))
+    return (_errorText != null && _isFocus == false)
+        ? SizedBox(width: 300.0, child: Text(_errorText!, style: textStyle))
         : Container();
   }
 
@@ -81,22 +87,20 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
             controller: widget.controller,
             focusNode: _focusNode,
             obscureText: _isObscure,
-            style: theme.textTheme.labelLarge!
-                .copyWith(letterSpacing: _isObscure ? -7.0 : 0.0),
             decoration: InputDecoration(
               contentPadding: const EdgeInsets.only(left: 22.0),
-              hintText: 'Password',
+              hintText: widget.hintText,
               hintStyle: theme.textTheme.labelLarge!.copyWith(
                   color: theme.extension<ExtensionColors>()!.textGrey),
               border: InputBorder.none,
               suffixIcon: Container(
-                margin: const EdgeInsets.fromLTRB(4.0, 0.0, 20.0, 0.0),
+                margin: const EdgeInsets.only(left: 4.0, right: 20.0),
                 child: GestureDetector(
                   child: SvgPicture.asset(
                     _isObscure
                         ? '${Constant.imagePath}show.svg'
                         : '${Constant.imagePath}hide.svg',
-                    width: 24.0,
+                    width: 20.0,
                     colorFilter: ColorFilter.mode(
                       theme.extension<ExtensionColors>()!.text,
                       BlendMode.srcIn,
@@ -111,6 +115,9 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
               ),
               suffixIconConstraints: const BoxConstraints(maxWidth: 48.0),
             ),
+            style: theme.textTheme.labelLarge!
+                .copyWith(letterSpacing: _isObscure ? -7.0 : 0.0),
+            onEditingComplete: widget.onEditingComplete,
           ),
         ),
         _buildErrorText(theme.textTheme.bodySmall!

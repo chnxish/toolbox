@@ -67,8 +67,8 @@ class DioService {
   }
 
   static Future<Map<String, dynamic>> post(
-    String url,
-    dynamic params, {
+    String url, {
+    dynamic params,
     Function? successCallBack,
     Function? errorCallBack,
   }) async {

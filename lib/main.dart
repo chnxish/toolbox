@@ -3,7 +3,7 @@ import 'package:fluro/fluro.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 
-import 'package:toolbox/src/provider/token_provider.dart';
+import 'package:toolbox/src/constant/constant.dart';
 import 'package:toolbox/src/provider/user_provider.dart';
 import 'package:toolbox/src/provider/theme_provider.dart';
 import 'package:toolbox/src/routers/application.dart';
@@ -20,8 +20,8 @@ void main() async {
 
   WindowOptions windowOptions = const WindowOptions(
     title: 'ToolBox',
-    size: Size(1024, 725),
-    minimumSize: Size(1024, 725),
+    size: Constant.windowSize,
+    minimumSize: Constant.windowSize,
     center: true,
     backgroundColor: Colors.transparent,
     skipTaskbar: false,
@@ -37,7 +37,6 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
-        ChangeNotifierProvider(create: (_) => TokenProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
       ],
       child: const MyApp(),

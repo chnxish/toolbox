@@ -1,3 +1,24 @@
+typedef Validator = String? Function(String? value);
+
+String? validate(String? value) {
+  if (value == null || value.isEmpty) {
+    return 'Data is required';
+  }
+  return null;
+}
+
+String? validateUsername(String? value) {
+  const String pattern = r'^(?![0-9])[\dA-Za-z]+$';
+  final RegExp regex = RegExp(pattern);
+
+  if (value == null || value.isEmpty) {
+    return 'Username is required';
+  } else if (!regex.hasMatch(value)) {
+    return 'Enter a valid username';
+  }
+  return null;
+}
+
 String? validateEmail(String? value) {
   const String pattern = r"(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'"
       r'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-'

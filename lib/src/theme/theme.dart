@@ -133,35 +133,27 @@ final ThemeData lightTheme = ThemeData(
     displayColor: CustomColors.textBlack,
     bodyColor: CustomColors.textBlack,
   ),
-).copyWith(extensions: <ThemeExtension<dynamic>>[
-  ExtensionColors(
-    text: CustomColors.textBlack,
-    textGrey: CustomColors.textDarkGrey,
-    backgroundGrey: CustomColors.backgroundLightGrey,
-    gradientGreen: CustomColors.gradientLightGreen,
-    gradientGrey: CustomColors.gradientLightGrey,
-    buttonBackgroundColors: ColorState(
-      normal: Colors.transparent,
-      mouseOver: const Color(0xFFE9E9E9),
-      mouseDown: const Color(0xFFEDEDED),
-    ),
-    buttonIconColors: ColorState(
-      normal: const Color(0xFF4E4E4E),
-      mouseOver: const Color(0xFF4E4E4E),
-      mouseDown: const Color(0xFF7F7F7F),
-    ),
-    closeButtonBackgroundColors: ColorState(
-      normal: Colors.transparent,
-      mouseOver: const Color(0xFFC42B1C),
-      mouseDown: const Color(0xFFC83C31),
-    ),
-    closeButtonIconColors: ColorState(
-      normal: const Color(0xFF4E4E4E),
-      mouseOver: const Color(0xFFFFFFFF),
-      mouseDown: const Color(0xFFFFFFFF),
-    ),
+).copyWith(
+  scrollbarTheme: const ScrollbarThemeData().copyWith(
+    thumbColor:
+        MaterialStateProperty.all(CustomColors.scrollbarBackgroundLight),
+    radius: const Radius.circular(2.0),
+    thickness: MaterialStateProperty.all(4.0),
   ),
-]);
+  extensions: <ThemeExtension<dynamic>>[
+    ExtensionColors(
+      text: CustomColors.textBlack,
+      textGrey: CustomColors.textDarkGrey,
+      backgroundGrey: CustomColors.backgroundLightGrey,
+      gradientGreen: CustomColors.gradientLightGreen,
+      gradientGrey: CustomColors.gradientLightGrey,
+      buttonBackgroundColors: CustomColors.buttonBackgroundLight,
+      buttonIconColors: CustomColors.buttonIconLight,
+      closeButtonBackgroundColors: CustomColors.closeButtonBackgroundLight,
+      closeButtonIconColors: CustomColors.closeButtonIconLight,
+    ),
+  ],
+);
 
 final ThemeData darkTheme = ThemeData(
   useMaterial3: true,
@@ -175,32 +167,23 @@ final ThemeData darkTheme = ThemeData(
     displayColor: CustomColors.textWhite,
     bodyColor: CustomColors.textWhite,
   ),
-).copyWith(extensions: <ThemeExtension<dynamic>>[
-  ExtensionColors(
-    text: CustomColors.textWhite,
-    textGrey: CustomColors.textLightGrey,
-    backgroundGrey: CustomColors.backgroundDarkGrey,
-    gradientGreen: CustomColors.gradientDarkGreen,
-    gradientGrey: CustomColors.gradientDarkGrey,
-    buttonBackgroundColors: ColorState(
-      normal: Colors.transparent,
-      mouseOver: const Color(0xFF2D2D2D),
-      mouseDown: const Color(0xFF292929),
-    ),
-    buttonIconColors: ColorState(
-      normal: const Color(0xFFFFFFFF),
-      mouseOver: const Color(0xFFFFFFFF),
-      mouseDown: const Color(0xFFB9B9B9),
-    ),
-    closeButtonBackgroundColors: ColorState(
-      normal: Colors.transparent,
-      mouseOver: const Color(0xFFC42B1C),
-      mouseDown: const Color(0xFFB3271C),
-    ),
-    closeButtonIconColors: ColorState(
-      normal: const Color(0xFFFFFFFF),
-      mouseOver: const Color(0xFFFFFFFF),
-      mouseDown: const Color(0xFFD6D6D6),
-    ),
+).copyWith(
+  scrollbarTheme: const ScrollbarThemeData().copyWith(
+    thumbColor: MaterialStateProperty.all(CustomColors.scrollbarBackgroundDark),
+    radius: const Radius.circular(2.0),
+    thickness: MaterialStateProperty.all(4.0),
   ),
-]);
+  extensions: <ThemeExtension<dynamic>>[
+    ExtensionColors(
+      text: CustomColors.textWhite,
+      textGrey: CustomColors.textLightGrey,
+      backgroundGrey: CustomColors.backgroundDarkGrey,
+      gradientGreen: CustomColors.gradientDarkGreen,
+      gradientGrey: CustomColors.gradientDarkGrey,
+      buttonBackgroundColors: CustomColors.buttonBackgroundDark,
+      buttonIconColors: CustomColors.buttonIconDark,
+      closeButtonBackgroundColors: CustomColors.closeButtonBackgroundDark,
+      closeButtonIconColors: CustomColors.closeButtonIconDark,
+    ),
+  ],
+);

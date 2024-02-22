@@ -5,30 +5,34 @@ class User {
     required this.email,
     required this.password,
     required this.avatar,
+    required this.token,
   });
 
-  int id;
+  String id;
   String username;
   String email;
   String password;
   String avatar;
+  String token;
 
   factory User.empty() {
     return User(
-      id: 0,
+      id: '',
       username: '',
       email: '',
       password: '',
       avatar: '',
+      token: '',
     );
   }
 
   User.fromJson(Map<String, dynamic> json)
-      : id = json['id'] as int,
+      : id = json['id'] as String,
         username = json['username'] as String,
         email = json['email'] as String,
         password = json['password'] as String,
-        avatar = json['avatar'] as String;
+        avatar = json['avatar'] as String,
+        token = json['token'] as String;
 
   Map<String, dynamic> toJson() => {
         'id': id,
@@ -36,6 +40,7 @@ class User {
         'email': email,
         'password': password,
         'avatar': avatar,
+        'token': token,
       };
 
   @override

@@ -4,22 +4,28 @@ import 'package:toolbox/src/constant/custom_colors.dart';
 import 'package:toolbox/src/theme/theme.dart';
 import 'package:toolbox/src/utils/validate.dart';
 
-class EmailTextField extends StatefulWidget {
-  const EmailTextField({
+class CommonTextField extends StatefulWidget {
+  const CommonTextField({
     super.key,
     required this.controller,
+    this.hintText,
+    this.onEditingComplete,
+    this.validator = validate,
   });
 
   final TextEditingController controller;
+  final String? hintText;
+  final VoidCallback? onEditingComplete;
+  final Validator validator;
 
   @override
-  State<EmailTextField> createState() => _EmailTextFieldState();
+  State<CommonTextField> createState() => _CommonTextFieldState();
 }
 
-class _EmailTextFieldState extends State<EmailTextField> {
+class _CommonTextFieldState extends State<CommonTextField> {
   late final FocusNode _focusNode;
   bool _isFocus = false;
-  String? errorText;
+  String? _errorText;
 
   @override
   void initState() {
@@ -28,7 +34,7 @@ class _EmailTextFieldState extends State<EmailTextField> {
     _focusNode.addListener(() {
       final bool hasFocus = _focusNode.hasFocus;
       if (!hasFocus) {
-        _validateEmailInput();
+        _validateInput();
       }
       setState(() {
         _isFocus = hasFocus;
@@ -36,16 +42,16 @@ class _EmailTextFieldState extends State<EmailTextField> {
     });
   }
 
-  void _validateEmailInput() {
+  void _validateInput() {
     String value = widget.controller.text;
     setState(() {
-      errorText = validateEmail(value);
+      _errorText = widget.validator(value);
     });
   }
 
   Widget _buildErrorText(TextStyle? textStyle) {
-    return (errorText != null && _isFocus == false)
-        ? SizedBox(width: 300.0, child: Text(errorText!, style: textStyle))
+    return (_errorText != null && _isFocus == false)
+        ? SizedBox(width: 300.0, child: Text(_errorText!, style: textStyle))
         : Container();
   }
 
@@ -78,14 +84,14 @@ class _EmailTextFieldState extends State<EmailTextField> {
             controller: widget.controller,
             focusNode: _focusNode,
             decoration: InputDecoration(
-              contentPadding: const EdgeInsets.fromLTRB(22.0, 0.0, 20.0, 0.0),
-              hintText: 'Email',
+              contentPadding: const EdgeInsets.only(left: 22.0, right: 20.0),
+              hintText: widget.hintText,
               hintStyle: theme.textTheme.labelLarge!.copyWith(
                   color: theme.extension<ExtensionColors>()!.textGrey),
               border: InputBorder.none,
             ),
             style: theme.textTheme.labelLarge,
-            onEditingComplete: () => _focusNode.unfocus(),
+            onEditingComplete: widget.onEditingComplete,
           ),
         ),
         _buildErrorText(theme.textTheme.bodySmall!

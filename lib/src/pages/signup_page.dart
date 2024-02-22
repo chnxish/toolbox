@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -10,35 +10,34 @@ import 'package:toolbox/src/constant/constant.dart';
 import 'package:toolbox/src/constant/custom_colors.dart';
 import 'package:toolbox/src/constant/service_url.dart';
 import 'package:toolbox/src/models/color_state.dart';
-import 'package:toolbox/src/models/user.dart';
-import 'package:toolbox/src/routers/routes.dart';
-import 'package:toolbox/src/services/dio_service.dart';
 import 'package:toolbox/src/provider/user_provider.dart';
 import 'package:toolbox/src/routers/application.dart';
+import 'package:toolbox/src/routers/routes.dart';
+import 'package:toolbox/src/services/dio_service.dart';
 import 'package:toolbox/src/theme/theme.dart';
 import 'package:toolbox/src/utils/validate.dart';
-import 'package:toolbox/src/widgets/popup/alert.dart';
 import 'package:toolbox/src/widgets/button/window_text_button.dart';
+import 'package:toolbox/src/widgets/popup/alert.dart';
+import 'package:toolbox/src/widgets/popup/confirmation.dart';
 import 'package:toolbox/src/widgets/text/checkbox_with_text.dart';
 import 'package:toolbox/src/widgets/text/clickable_text.dart';
 import 'package:toolbox/src/widgets/text_field/common_text_field.dart';
 import 'package:toolbox/src/widgets/text_field/secure_text_field.dart';
 import 'package:toolbox/src/widgets/window_appbar/auth_page_appbar.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class SignupPage extends StatefulWidget {
+  const SignupPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<SignupPage> createState() => _SignupPageState();
 }
 
-class _LoginPageState extends State<LoginPage> with WindowListener {
+class _SignupPageState extends State<SignupPage> with WindowListener {
   @override
   void initState() {
     super.initState();
     windowManager.addListener(this);
     windowManager.setSize(Constant.windowSize);
-    windowManager.setResizable(false);
   }
 
   @override
@@ -51,7 +50,7 @@ class _LoginPageState extends State<LoginPage> with WindowListener {
   Widget build(BuildContext context) {
     return const Scaffold(
       appBar: AuthPageAppbar(
-        leftSideBackground: CustomColors.accent01,
+        leftSideBackground: CustomColors.accent02,
       ),
       body: Flex(
         direction: Axis.horizontal,
@@ -78,7 +77,7 @@ class LeftSide extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
 
     return Container(
-      color: CustomColors.accent01,
+      color: CustomColors.accent02,
       height: double.infinity,
       child: Stack(
         children: <Widget>[
@@ -104,14 +103,14 @@ class LeftSide extends StatelessWidget {
             ),
           ),
           Positioned(
-            left: 28.0,
+            left: 80.0,
             bottom: 2.0,
             child: SvgPicture.asset(
-              '${Constant.imagePath}people1.svg',
-              width: 459.0,
-              semanticsLabel: 'People1',
+              '${Constant.imagePath}people2.svg',
+              width: 510.0,
+              semanticsLabel: 'People2',
             ),
-          )
+          ),
         ],
       ),
     );
@@ -127,25 +126,26 @@ class RightSide extends StatefulWidget {
 
 class _RightSideState extends State<RightSide> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  late final TextEditingController _usernameController;
   late final TextEditingController _emailController;
   late final TextEditingController _passwordController;
-  late bool _isRemember;
+  late final TextEditingController _confirmPasswordController;
+  bool _isAgree = false;
   bool _isShowAlert = false;
   String _alertText = '';
 
   @override
   void initState() {
     super.initState();
-    UserProvider loginProvider =
-        Provider.of<UserProvider>(context, listen: false);
-    _emailController = TextEditingController(text: loginProvider.email);
-    _passwordController = TextEditingController(text: loginProvider.password);
-    _isRemember = loginProvider.isRemember;
+    _usernameController = TextEditingController();
+    _emailController = TextEditingController();
+    _passwordController = TextEditingController();
+    _confirmPasswordController = TextEditingController();
   }
 
-  void _toggleRemember() {
+  void _toggleAgree() {
     setState(() {
-      _isRemember = !_isRemember;
+      _isAgree = !_isAgree;
     });
   }
 
@@ -162,37 +162,67 @@ class _RightSideState extends State<RightSide> {
     });
   }
 
-  void _login() {
+  void _showConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return Confirmation(
+          title: 'Success',
+          text: 'Your account has been created successfully! '
+              'Please check your email to confirm your email address in order to activate your account.',
+          onPressed: () {
+            Application.router.navigateTo(context, Routes.login);
+          },
+        );
+      },
+    );
+  }
+
+  void _signup() {
+    final String username = _usernameController.text;
     final String email = _emailController.text;
     final String password = _passwordController.text;
+    final String confirmPassword = _confirmPasswordController.text;
 
-    if (email.isNotEmpty && password.isNotEmpty) {
-      Provider.of<UserProvider>(context, listen: false).token = '';
-      FormData params =
-          FormData.fromMap({'email': email, 'password': password});
+    if (_isAgree) {
+      if (username.isNotEmpty &&
+          email.isNotEmpty &&
+          password.isNotEmpty &&
+          confirmPassword.isNotEmpty) {
+        if (password == confirmPassword) {
+          Provider.of<UserProvider>(context, listen: false).token = '';
+          FormData params = FormData.fromMap({
+            'username': username,
+            'email': email,
+            'password': password,
+            'confirm_password': confirmPassword,
+          });
 
-      DioService.post(ServiceUrl.login, params: params,
-          successCallBack: (dataMap) {
-        Map<String, dynamic> data = dataMap['data'];
-        String? pw = _isRemember ? password : '';
-        data['password'] = pw;
-        Provider.of<UserProvider>(context, listen: false).user =
-            User.fromJson(data);
-        Provider.of<UserProvider>(context, listen: false).isRemember =
-            _isRemember;
-        Application.router.navigateTo(context, Routes.root);
-      }, errorCallBack: (error) {
-        _showAlert(error);
-      });
+          DioService.post(ServiceUrl.signup, params: params,
+              successCallBack: (dataMap) {
+            _showConfirmation(context);
+          }, errorCallBack: (error) {
+            _showAlert(error);
+          });
+        } else {
+          _showAlert('The password and confirmation password must match.');
+        }
+      } else {
+        _showAlert('All details must not be empty.');
+      }
     } else {
-      _showAlert('The email or password cannot be empty.');
+      _showAlert('You must agree to the terms of use.');
     }
   }
 
   @override
   void dispose() {
+    _usernameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -201,7 +231,6 @@ class _RightSideState extends State<RightSide> {
     final ThemeData theme = Theme.of(context);
 
     return SizedBox(
-      height: double.infinity,
       child: Stack(
         alignment: Alignment.topCenter,
         children: <Widget>[
@@ -213,63 +242,61 @@ class _RightSideState extends State<RightSide> {
             ),
           ),
           Positioned(
-            top: 118.0,
+            top: 62.0,
             child: Form(
               key: _formKey,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   SelectableText(
-                    'Welcome back!',
+                    'Create account',
                     style: theme.textTheme.displaySmall,
                   ),
                   SelectableText(
-                    'Please enter your details',
+                    'Enter details for create an account',
                     style: theme.textTheme.bodyLarge!.copyWith(
                         color: theme.extension<ExtensionColors>()!.textGrey),
                   ),
-                  const SizedBox(height: 25.0),
+                  const SizedBox(height: 14.0),
+                  CommonTextField(
+                    controller: _usernameController,
+                    hintText: 'Username',
+                    onEditingComplete: _signup,
+                    validator: validateUsername,
+                  ),
                   CommonTextField(
                     controller: _emailController,
                     hintText: 'Email',
-                    onEditingComplete: _login,
+                    onEditingComplete: _signup,
                     validator: validateEmail,
                   ),
                   SecureTextField(
                     controller: _passwordController,
                     hintText: 'Password',
-                    onEditingComplete: _login,
+                    onEditingComplete: _signup,
+                    validator: validatePassword,
+                  ),
+                  SecureTextField(
+                    controller: _confirmPasswordController,
+                    hintText: 'Confirm Password',
+                    onEditingComplete: _signup,
                     validator: validatePassword,
                   ),
                   SizedBox(
                     width: 312.0,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        CheckboxWithText(
-                          isChecked: _isRemember,
-                          onChanged: _toggleRemember,
-                          text: 'Remember me',
-                          backgroundColor: theme.colorScheme.primary,
-                          sideColor: theme
-                              .extension<ExtensionColors>()!
-                              .backgroundGrey,
-                          textStyle: theme.textTheme.bodyLarge!.copyWith(
-                              color:
-                                  theme.extension<ExtensionColors>()!.textGrey),
-                        ),
-                        ClickableText(
-                          text: 'Forgot Password?',
-                          textStyle: theme.textTheme.bodyLarge!
-                              .copyWith(color: theme.colorScheme.primary),
-                          path: ServiceUrl.forgotPassword,
-                          isInternalRoute: false,
-                        ),
-                      ],
+                    child: CheckboxWithText(
+                      isChecked: _isAgree,
+                      onChanged: _toggleAgree,
+                      text: 'I agree to the terms of use',
+                      backgroundColor: theme.colorScheme.primary,
+                      sideColor:
+                          theme.extension<ExtensionColors>()!.backgroundGrey,
+                      textStyle: theme.textTheme.bodyLarge!.copyWith(
+                          color: theme.extension<ExtensionColors>()!.textGrey),
                     ),
                   ),
                   Container(
-                    margin: const EdgeInsets.only(top: 82.0),
+                    margin: const EdgeInsets.only(top: 45.0),
                     child: WindowTextButton(
                       backgroundColors: ColorState(
                         normal: CustomColors.primary,
@@ -277,10 +304,10 @@ class _RightSideState extends State<RightSide> {
                         mouseDown: CustomColors.primary,
                       ),
                       borderRadius: BorderRadius.circular(15.0),
-                      text: 'Login',
+                      text: 'Sign up',
                       textStyle: theme.textTheme.labelLarge!
                           .copyWith(color: CustomColors.textWhite),
-                      onPressed: _login,
+                      onPressed: _signup,
                     ),
                   ),
                 ],
@@ -288,22 +315,22 @@ class _RightSideState extends State<RightSide> {
             ),
           ),
           Positioned(
-            bottom: 71.0,
+            bottom: 41.0,
             child: SizedBox(
-              width: 239.0,
+              width: 254.0,
               child: Row(
                 children: <Widget>[
                   SelectableText(
-                    'Don\'t have an email?',
+                    'Already have an account?',
                     style: theme.textTheme.bodyLarge!.copyWith(
                         color: theme.extension<ExtensionColors>()!.textGrey),
                   ),
-                  const SizedBox(width: 7.0),
+                  const SizedBox(width: 6.0),
                   ClickableText(
-                    text: 'Sign Up',
+                    text: 'Login',
                     textStyle: theme.textTheme.bodyLarge!
                         .copyWith(color: theme.colorScheme.primary),
-                    path: Routes.signup,
+                    path: Routes.login,
                   ),
                 ],
               ),

@@ -11,15 +11,16 @@ class UserProvider extends ChangeNotifier {
   User _user = User.empty();
   bool _isRemember = true;
 
-  int get id => _user.id;
+  String get id => _user.id;
   String get username => _user.username;
   String get email => _user.email;
   String get password => _user.password;
   String get avatar => _user.avatar;
+  String get token => _user.token;
   User get user => _user;
   bool get isRemember => _isRemember;
 
-  set id(int value) {
+  set id(String value) {
     _user.id = value;
     UserPreferences.setId(value);
     notifyListeners();
@@ -49,6 +50,12 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  set token(String value) {
+    _user.token = value;
+    UserPreferences.setToken(value);
+    notifyListeners();
+  }
+
   set user(User user) {
     _user = user;
     UserPreferences.setId(user.id);
@@ -56,6 +63,7 @@ class UserProvider extends ChangeNotifier {
     UserPreferences.setEmail(user.email);
     UserPreferences.setPassword(user.password);
     UserPreferences.setAvatar(user.avatar);
+    UserPreferences.setToken(user.token);
     notifyListeners();
   }
 
@@ -71,13 +79,15 @@ class UserProvider extends ChangeNotifier {
     final email = await UserPreferences.getEmail();
     final password = await UserPreferences.getPassword();
     final avatar = await UserPreferences.getAvatar();
+    final token = await UserPreferences.getToken();
 
     _user = User(
         id: id,
         username: username,
         email: email,
         password: password,
-        avatar: avatar);
+        avatar: avatar,
+        token: token);
 
     _isRemember = await UserPreferences.getRemember();
     notifyListeners();

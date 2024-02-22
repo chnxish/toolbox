@@ -56,17 +56,11 @@ class _SurveyFeedbackState extends State<SurveyFeedback> {
               top: 8.0,
               right: 8.0,
               child: WindowIconButton.close(
-                backgroundColors: ColorState(
-                  normal: theme.scaffoldBackgroundColor,
-                  mouseOver: theme.scaffoldBackgroundColor,
-                  mouseDown: theme.scaffoldBackgroundColor,
-                ),
+                backgroundColors:
+                    ColorState.same(theme.scaffoldBackgroundColor),
                 borderRadius: BorderRadius.circular(12.0),
-                iconColors: ColorState(
-                  normal: theme.extension<ExtensionColors>()!.text,
-                  mouseOver: theme.extension<ExtensionColors>()!.text,
-                  mouseDown: theme.extension<ExtensionColors>()!.text,
-                ),
+                iconColors:
+                    ColorState.same(theme.extension<ExtensionColors>()!.text),
                 onPressed: _close,
               ),
             ),
@@ -76,11 +70,8 @@ class _SurveyFeedbackState extends State<SurveyFeedback> {
               child: WindowTextButton(
                 width: 120.0,
                 height: 26.0,
-                backgroundColors: ColorState(
-                  normal: Colors.white.withOpacity(0.9),
-                  mouseOver: Colors.white.withOpacity(0.9),
-                  mouseDown: Colors.white.withOpacity(0.9),
-                ),
+                backgroundColors:
+                    ColorState.same(Colors.white.withOpacity(0.9)),
                 borderRadius: BorderRadius.circular(8.0),
                 text: 'Tell about your idea',
                 textStyle: theme.textTheme.labelSmall!

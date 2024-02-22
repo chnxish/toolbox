@@ -1,26 +1,17 @@
 import 'package:dio/dio.dart';
 
-class NavigationException implements Exception {
-  NavigationException(this.message);
-
-  final String message;
-
-  @override
-  String toString() {
-    return 'Navigation exception: $message';
-  }
-}
-
 class BadRequestException extends DioException {
-  BadRequestException(RequestOptions r) : super(requestOptions: r);
+  BadRequestException(RequestOptions requestOptions, Response response)
+      : super(requestOptions: requestOptions, response: response);
   @override
   String toString() {
-    return 'Invalid request';
+    return 'Invalid request: ${response!.data['message']}';
   }
 }
 
 class InternalServerErrorException extends DioException {
-  InternalServerErrorException(RequestOptions r) : super(requestOptions: r);
+  InternalServerErrorException(RequestOptions requestOptions, Response response)
+      : super(requestOptions: requestOptions, response: response);
   @override
   String toString() {
     return 'Unknown error, please try again...';
@@ -28,23 +19,26 @@ class InternalServerErrorException extends DioException {
 }
 
 class ConflictException extends DioException {
-  ConflictException(RequestOptions r) : super(requestOptions: r);
+  ConflictException(RequestOptions requestOptions, Response response)
+      : super(requestOptions: requestOptions, response: response);
   @override
   String toString() {
-    return 'Conflict occurred';
+    return 'Conflict occurred: ${response!.data['message']}';
   }
 }
 
 class UnauthorizedException extends DioException {
-  UnauthorizedException(RequestOptions r) : super(requestOptions: r);
+  UnauthorizedException(RequestOptions requestOptions, Response response)
+      : super(requestOptions: requestOptions, response: response);
   @override
   String toString() {
-    return 'Access denied';
+    return 'Access denied: ${response!.data['message']}';
   }
 }
 
 class NotFoundException extends DioException {
-  NotFoundException(RequestOptions r) : super(requestOptions: r);
+  NotFoundException(RequestOptions requestOptions, Response response)
+      : super(requestOptions: requestOptions, response: response);
   @override
   String toString() {
     return 'The requested info could not be found';
@@ -52,7 +46,9 @@ class NotFoundException extends DioException {
 }
 
 class NoInternetConnectionException extends DioException {
-  NoInternetConnectionException(RequestOptions r) : super(requestOptions: r);
+  NoInternetConnectionException(
+      RequestOptions requestOptions, Response response)
+      : super(requestOptions: requestOptions, response: response);
   @override
   String toString() {
     return 'No internet connection found, please try again...';
@@ -60,7 +56,8 @@ class NoInternetConnectionException extends DioException {
 }
 
 class DeadlineExceededException extends DioException {
-  DeadlineExceededException(RequestOptions r) : super(requestOptions: r);
+  DeadlineExceededException(RequestOptions requestOptions, Response response)
+      : super(requestOptions: requestOptions, response: response);
   @override
   String toString() {
     return 'The connection has timed out, please try again...';

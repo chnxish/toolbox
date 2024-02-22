@@ -157,6 +157,7 @@ class _WindowIconButtonState extends State<WindowIconButton> {
     ColorState iconColors = widget.iconColors ?? ColorState.transparent();
     Color backgroundColor = backgroundColors.normal;
     Color iconColor = iconColors.normal;
+    EdgeInsets padding = EdgeInsets.zero;
 
     if (_isHovering) {
       backgroundColor = backgroundColors.mouseOver;
@@ -174,6 +175,7 @@ class _WindowIconButtonState extends State<WindowIconButton> {
         height: widget.height - 8.0,
         colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
       );
+      padding = const EdgeInsets.all(4.0);
     } else if (widget.iconWidget != null) {
       childWidget = widget.iconWidget!;
     } else {
@@ -191,7 +193,7 @@ class _WindowIconButtonState extends State<WindowIconButton> {
         onTapUp: (_) => _onActive(pressed: false),
         onTap: widget.onPressed,
         child: Container(
-          padding: const EdgeInsets.all(4.0),
+          padding: padding,
           decoration: BoxDecoration(
             color: backgroundColor,
             borderRadius: widget.borderRadius,

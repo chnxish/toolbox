@@ -7,15 +7,19 @@ class ColorState {
     required this.mouseDown,
   });
 
-  factory ColorState.transparent() {
-    return ColorState(
-      normal: Colors.transparent,
-      mouseOver: Colors.transparent,
-      mouseDown: Colors.transparent,
-    );
-  }
-
   Color normal;
   Color mouseOver;
   Color mouseDown;
+
+  factory ColorState.same(Color color) {
+    return ColorState(
+      normal: color,
+      mouseOver: color,
+      mouseDown: color,
+    );
+  }
+
+  factory ColorState.transparent() {
+    return ColorState.same(Colors.transparent);
+  }
 }
