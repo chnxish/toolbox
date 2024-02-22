@@ -47,6 +47,9 @@ dependencies:
   # A powerful HTTP networking package for Dart/Flutter.
   dio: ^5.4.0
 
+  # A flutter library to show images from the internet and keep them in the cache directory.
+  cached_network_image: ^3.3.1
+
   # A Flutter plugin for launching a URL.
   url_launcher: ^6.2.2
 
